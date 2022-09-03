@@ -1,24 +1,27 @@
 import { Injectable } from '@nestjs/common';
+import { RegisterDto } from './dto/register.dto';
+import { RegisterUserResponse } from '../interfaces/user';
+import { User } from './user.entity';
+import { hashPwd } from '../utils/hash-pwd';
 
 @Injectable()
 export class UserService {
-  // create(createUserDto: CreateUserDto) {
-  //   return 'This action adds a new user';
-  // }
-  //
-  // findAll() {
-  //   return `This action returns all user`;
-  // }
-  //
-  // findOne(id: number) {
-  //   return `This action returns a #${id} user`;
-  // }
-  //
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
-  //
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
+  filter(user: User): RegisterUserResponse {
+    const { id, email } = user;
+    return { id, email };
+  }
+
+  async register(newUser: RegisterDto): Promise<RegisterUserResponse> {
+    //@@TODO Dodaj sprawdzenie czy użytkownik o takim mailu istnieje!
+    const user = new User();
+    user.email = newUser.email;
+    user.pwdHash = hashPwd(newUser.pwd);
+    await user.save();
+
+    return this.filter(user);
+  }
+
+  // async getOneUser(id: string): Promise<User> {
+  //   return await User.findOne(id);
   // }
 }
