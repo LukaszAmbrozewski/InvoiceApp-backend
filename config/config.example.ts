@@ -12,4 +12,5 @@ export const config = {
   dbSynchronize: false,
   dbLogging: false,
   hash: 'hash',
+  secretOrKey: 'secretOrKey',
 };
