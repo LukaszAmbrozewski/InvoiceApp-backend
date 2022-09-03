@@ -11,4 +11,5 @@ export const config = {
   dbPassword: 'pass',
   dbSynchronize: false,
   dbLogging: false,
+  hash: 'hash',
 };
