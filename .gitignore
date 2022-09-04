@@ -2,6 +2,7 @@
 /dist
 /node_modules
 config.ts
+.eslintrc.js
 
 # Logs
 logs
