@@ -12,4 +12,20 @@ export class ClientsService {
       },
     });
   }
+
+  async getOneUsers(user: User, clientId: string) {
+    const client = await Clients.findOne({
+      where: {
+        userId: user.id,
+        id: clientId,
+      },
+    });
+
+    if (!client) {
+      return {
+        isSuccess: false,
+      };
+    }
+    return client;
+  }
 }
