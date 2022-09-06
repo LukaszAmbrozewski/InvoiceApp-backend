@@ -1,4 +1,17 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { UserObj } from '../decorators/user-obj.decorator';
+import { User } from '../user/user.entity';
+import { Client } from '../interfaces/client';
+import { ClientsService } from './clients.service';
 
 @Controller('clients')
-export class ClientsController {}
+export class ClientsController {
+  constructor(@Inject(ClientsService) private clientsService: ClientsService) {}
+
+  @Get('/')
+  @UseGuards(AuthGuard('jwt'))
+  getAllUsers(@UserObj() user: User): Promise<Client[]> {
+    return this.clientsService.getAllUsers(user);
+  }
+}
