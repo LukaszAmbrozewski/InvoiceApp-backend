@@ -1,9 +1,18 @@
-import { Controller, Get, Inject, Param, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { User } from '../user/user.entity';
-import { Client } from '../interfaces/client';
+import { AddClientResponse, Client } from '../interfaces/client';
 import { ClientsService } from './clients.service';
+import { ClientDto } from './dto/client.dto';
 
 @Controller('clients')
 export class ClientsController {
@@ -22,5 +31,14 @@ export class ClientsController {
     @UserObj() user: User,
   ): Promise<{ isSuccess: boolean } | Client> {
     return this.clientsService.getOneUsers(user, clientId);
+  }
+
+  @Post('/')
+  @UseGuards(AuthGuard('jwt'))
+  addClient(
+    @Body() newClient: ClientDto,
+    @UserObj() user: User,
+  ): Promise<AddClientResponse> {
+    return this.clientsService.addClient(newClient, user);
   }
 }

@@ -9,3 +9,13 @@ export interface Client {
   email: string;
   phoneNumber: number;
 }
+
+export type AddClientResponse =
+  | {
+      isSuccess: true;
+      id: string;
+      companyName: string;
+    }
+  | {
+      isSuccess: false;
+    };

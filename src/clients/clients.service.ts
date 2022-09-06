@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { Client } from '../interfaces/client';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { AddClientResponse, Client } from '../interfaces/client';
 import { Clients } from './clients.entity';
 import { User } from '../user/user.entity';
 
@@ -27,5 +27,77 @@ export class ClientsService {
       };
     }
     return client;
+  }
+
+  //@@TODO dodać walidację z clientDTO.
+  async addClient(newClient: Client, user: User): Promise<AddClientResponse> {
+    const {
+      companyName,
+      streetAddress,
+      cityAndCode,
+      nip,
+      regon,
+      email,
+      phoneNumber,
+    } = newClient;
+
+    const checkClientByNip = await Clients.findOne({
+      where: {
+        userId: user.id,
+        nip,
+      },
+    });
+
+    if (checkClientByNip) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Client is already exist!',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    console.log(typeof nip);
+
+    if (
+      typeof companyName !== 'string' ||
+      typeof streetAddress !== 'string' ||
+      typeof cityAndCode !== 'string' ||
+      typeof Number(nip) !== 'number' ||
+      typeof Number(regon) !== 'number' ||
+      typeof email !== 'string' ||
+      typeof Number(Number) !== 'number'
+      // companyName.length <= 255 ||
+      // streetAddress.length <= 255
+      // cityAndCode.length <= 255
+      // nip.length <= 10 ||
+      // regon.toString().length <= 14 ||
+      // // email.length <= 255 ||
+      // phoneNumber.toString().length <= 22
+    ) {
+      return {
+        isSuccess: false,
+      };
+    }
+
+    const client = new Clients();
+
+    client.userId = user.id;
+    client.companyName = companyName;
+    client.streetAddress = streetAddress;
+    client.cityAndCode = cityAndCode;
+    client.nip = nip;
+    client.regon = regon;
+    client.email = email;
+    client.phoneNumber = phoneNumber;
+
+    await client.save();
+
+    return {
+      isSuccess: true,
+      id: client.id,
+      companyName: client.companyName,
+    };
   }
 }
