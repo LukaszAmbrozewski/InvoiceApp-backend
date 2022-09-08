@@ -29,7 +29,6 @@ export class ClientsService {
     return client;
   }
 
-  //@@TODO dodać walidację z clientDTO.
   async addClient(newClient: Client, user: User): Promise<AddClientResponse> {
     const {
       companyName,
@@ -44,7 +43,7 @@ export class ClientsService {
     const checkClientByNip = await Clients.findOne({
       where: {
         userId: user.id,
-        nip,
+        nip: nip,
       },
     });
 
@@ -58,8 +57,6 @@ export class ClientsService {
       );
     }
 
-    console.log(typeof nip);
-
     if (
       typeof companyName !== 'string' ||
       typeof streetAddress !== 'string' ||
@@ -67,14 +64,14 @@ export class ClientsService {
       typeof Number(nip) !== 'number' ||
       typeof Number(regon) !== 'number' ||
       typeof email !== 'string' ||
-      typeof Number(Number) !== 'number'
-      // companyName.length <= 255 ||
-      // streetAddress.length <= 255
-      // cityAndCode.length <= 255
-      // nip.length <= 10 ||
-      // regon.toString().length <= 14 ||
-      // // email.length <= 255 ||
-      // phoneNumber.toString().length <= 22
+      typeof Number(phoneNumber) !== 'number' ||
+      companyName.length > 255 ||
+      streetAddress.length > 255 ||
+      cityAndCode.length > 255 ||
+      nip.toString().length > 10 ||
+      regon.toString().length > 14 ||
+      email.length > 255 ||
+      phoneNumber.toString().length > 18
     ) {
       return {
         isSuccess: false,
