@@ -26,12 +26,14 @@ export class Clients extends BaseEntity {
   cityAndCode: string;
 
   @Column({
-    precision: 10,
+    precision: 11,
+    type: 'bigint',
   })
   nip: number;
 
   @Column({
-    precision: 14,
+    precision: 15,
+    type: 'bigint',
   })
   regon: number;
 
@@ -41,7 +43,8 @@ export class Clients extends BaseEntity {
   email: string;
 
   @Column({
-    precision: 22,
+    precision: 18,
+    type: 'bigint',
   })
   phoneNumber: number;
 }
