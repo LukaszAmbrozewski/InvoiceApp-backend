@@ -1,4 +1,11 @@
-import { Body, Controller, Inject, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Inject,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
 import { AuthGuard } from '@nestjs/passport';
 import { InvoiceResponse } from '../interfaces/invoice';
@@ -19,5 +26,14 @@ export class InvoicesController {
     @UserObj() user: User,
   ): Promise<InvoiceResponse> {
     return this.invoicesService.addInvoice(newInvoice, user);
+  }
+
+  @Patch('/')
+  @UseGuards(AuthGuard('jwt'))
+  pachInvoice(
+    @Body() patchedInvoice: InvoiceDto,
+    @UserObj() user: User,
+  ): Promise<InvoiceResponse> {
+    return this.invoicesService.patchInvoice(patchedInvoice, user);
   }
 }
