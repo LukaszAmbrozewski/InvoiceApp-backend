@@ -13,6 +13,41 @@ export class ClientsService {
     });
   }
 
+  updateClientObj = (client, newClientObj) => {
+    client.companyName = newClientObj.companyName;
+    client.streetAddress = newClientObj.streetAddress;
+    client.cityAndCode = newClientObj.cityAndCode;
+    client.nip = newClientObj.nip;
+    client.regon = newClientObj.regon;
+    client.email = newClientObj.email;
+    client.phoneNumber = newClientObj.phoneNumber;
+
+    return client;
+  };
+
+  validationNewClientObj = (newClientObj) => {
+    if (
+      typeof newClientObj.companyName !== 'string' ||
+      typeof newClientObj.streetAddress !== 'string' ||
+      typeof newClientObj.cityAndCode !== 'string' ||
+      typeof Number(newClientObj.nip) !== 'number' ||
+      typeof Number(newClientObj.regon) !== 'number' ||
+      typeof newClientObj.email !== 'string' ||
+      typeof Number(newClientObj.phoneNumber) !== 'number' ||
+      newClientObj.companyName.length > 255 ||
+      newClientObj.streetAddress.length > 255 ||
+      newClientObj.cityAndCode.length > 255 ||
+      newClientObj.nip.toString().length > 10 ||
+      newClientObj.regon.toString().length > 14 ||
+      newClientObj.email.length > 255 ||
+      newClientObj.phoneNumber.toString().length > 18
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   async getOneClient(user: User, clientId: string) {
     const client = await Clients.findOne({
       where: {
@@ -27,6 +62,43 @@ export class ClientsService {
       };
     }
     return client;
+  }
+
+  async addClient(newClient: Client, user: User): Promise<ClientResponse> {
+    const checkClientByNip = await Clients.findOne({
+      where: {
+        userId: user.id,
+        nip: newClient.nip,
+      },
+    });
+
+    if (checkClientByNip) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Client is already exist!',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    if (!this.validationNewClientObj(newClient)) {
+      return {
+        isSuccess: false,
+      };
+    }
+    const client = new Clients();
+
+    client.userId = user.id;
+    this.updateClientObj(client, newClient);
+
+    await client.save();
+
+    return {
+      isSuccess: true,
+      id: client.id,
+      companyName: client.companyName,
+    };
   }
 
   async removeClient(user: User, clientId: string): Promise<ClientResponse> {
@@ -58,65 +130,30 @@ export class ClientsService {
     };
   }
 
-  async addClient(newClient: Client, user: User): Promise<ClientResponse> {
-    const {
-      companyName,
-      streetAddress,
-      cityAndCode,
-      nip,
-      regon,
-      email,
-      phoneNumber,
-    } = newClient;
-
-    const checkClientByNip = await Clients.findOne({
+  async patchClient(
+    patchedClient: Client,
+    user: User,
+  ): Promise<ClientResponse> {
+    const client = await Clients.findOne({
       where: {
         userId: user.id,
-        nip: nip,
+        id: patchedClient.id,
       },
     });
 
-    if (checkClientByNip) {
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          error: 'Client is already exist!',
-        },
-        HttpStatus.FORBIDDEN,
-      );
-    }
-
-    if (
-      typeof companyName !== 'string' ||
-      typeof streetAddress !== 'string' ||
-      typeof cityAndCode !== 'string' ||
-      typeof Number(nip) !== 'number' ||
-      typeof Number(regon) !== 'number' ||
-      typeof email !== 'string' ||
-      typeof Number(phoneNumber) !== 'number' ||
-      companyName.length > 255 ||
-      streetAddress.length > 255 ||
-      cityAndCode.length > 255 ||
-      nip.toString().length > 10 ||
-      regon.toString().length > 14 ||
-      email.length > 255 ||
-      phoneNumber.toString().length > 18
-    ) {
+    if (!client) {
       return {
         isSuccess: false,
       };
     }
 
-    const client = new Clients();
+    this.updateClientObj(client, patchedClient);
 
-    client.userId = user.id;
-    client.companyName = companyName;
-    client.streetAddress = streetAddress;
-    client.cityAndCode = cityAndCode;
-    client.nip = nip;
-    client.regon = regon;
-    client.email = email;
-    client.phoneNumber = phoneNumber;
+    if (!this.validationNewClientObj(client)) {
+      return {
+        isSuccess: false,
+      };
+    }
 
     await client.save();
 

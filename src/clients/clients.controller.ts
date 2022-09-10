@@ -5,6 +5,7 @@ import {
   Get,
   Inject,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -50,5 +51,14 @@ export class ClientsController {
     @UserObj() user: User,
   ): Promise<ClientResponse> {
     return this.clientsService.removeClient(user, clientId);
+  }
+
+  @Patch('/')
+  @UseGuards(AuthGuard('jwt'))
+  patchClient(
+    @Body() patchedClient: ClientDto,
+    @UserObj() user: User,
+  ): Promise<ClientResponse> {
+    return this.clientsService.patchClient(patchedClient, user);
   }
 }
