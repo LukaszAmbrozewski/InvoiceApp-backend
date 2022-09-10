@@ -9,7 +9,7 @@ export interface Invoice {
   netValueOfTheEntireInvoice: number;
   tax: number;
   grossValueOfEntireInvoice: number;
-  personCreatingInvoice: number;
+  personCreatingInvoice: string;
   methodOfPayment: string;
   dueDate: string;
   accountNumber: string;

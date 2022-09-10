@@ -33,9 +33,9 @@ export class InvoiceDto {
   @IsNumber()
   grossValueOfEntireInvoice: number;
 
-  @IsNumber()
+  @IsString()
   @Max(120)
-  personCreatingInvoice: number;
+  personCreatingInvoice: string;
 
   @IsString()
   @Max(30)
