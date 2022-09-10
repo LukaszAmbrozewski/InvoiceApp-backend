@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ClientResponse, Client } from '../interfaces/client';
 import { Clients } from './clients.entity';
 import { User } from '../user/user.entity';
+import { validationNewClientObj } from '../utils/validation-new-client-obj';
+import { updateClientObj } from '../utils/update-client-obj';
 
 @Injectable()
 export class ClientsService {
@@ -12,41 +14,6 @@ export class ClientsService {
       },
     });
   }
-
-  updateClientObj = (client, newClientObj) => {
-    client.companyName = newClientObj.companyName;
-    client.streetAddress = newClientObj.streetAddress;
-    client.cityAndCode = newClientObj.cityAndCode;
-    client.nip = newClientObj.nip;
-    client.regon = newClientObj.regon;
-    client.email = newClientObj.email;
-    client.phoneNumber = newClientObj.phoneNumber;
-
-    return client;
-  };
-
-  validationNewClientObj = (newClientObj) => {
-    if (
-      typeof newClientObj.companyName !== 'string' ||
-      typeof newClientObj.streetAddress !== 'string' ||
-      typeof newClientObj.cityAndCode !== 'string' ||
-      typeof Number(newClientObj.nip) !== 'number' ||
-      typeof Number(newClientObj.regon) !== 'number' ||
-      typeof newClientObj.email !== 'string' ||
-      typeof Number(newClientObj.phoneNumber) !== 'number' ||
-      newClientObj.companyName.length > 255 ||
-      newClientObj.streetAddress.length > 255 ||
-      newClientObj.cityAndCode.length > 255 ||
-      newClientObj.nip.toString().length > 10 ||
-      newClientObj.regon.toString().length > 14 ||
-      newClientObj.email.length > 255 ||
-      newClientObj.phoneNumber.toString().length > 18
-    ) {
-      return false;
-    } else {
-      return true;
-    }
-  };
 
   async getOneClient(user: User, clientId: string) {
     const client = await Clients.findOne({
@@ -82,7 +49,7 @@ export class ClientsService {
       );
     }
 
-    if (!this.validationNewClientObj(newClient)) {
+    if (!validationNewClientObj(newClient)) {
       return {
         isSuccess: false,
       };
@@ -90,7 +57,7 @@ export class ClientsService {
     const client = new Clients();
 
     client.userId = user.id;
-    this.updateClientObj(client, newClient);
+    updateClientObj(client, newClient);
 
     await client.save();
 
@@ -147,9 +114,9 @@ export class ClientsService {
       };
     }
 
-    this.updateClientObj(client, patchedClient);
+    updateClientObj(client, patchedClient);
 
-    if (!this.validationNewClientObj(client)) {
+    if (!validationNewClientObj(client)) {
       return {
         isSuccess: false,
       };
