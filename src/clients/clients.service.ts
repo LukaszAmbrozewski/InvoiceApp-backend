@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { AddClientResponse, Client } from '../interfaces/client';
+import { ClientResponse, Client } from '../interfaces/client';
 import { Clients } from './clients.entity';
 import { User } from '../user/user.entity';
 
 @Injectable()
 export class ClientsService {
-  async getAllUsers(user: User): Promise<Client[]> {
+  async getAllClients(user: User): Promise<Client[]> {
     return await Clients.find({
       where: {
         userId: user.id,
@@ -13,7 +13,7 @@ export class ClientsService {
     });
   }
 
-  async getOneUsers(user: User, clientId: string) {
+  async getOneClient(user: User, clientId: string) {
     const client = await Clients.findOne({
       where: {
         userId: user.id,
@@ -29,7 +29,36 @@ export class ClientsService {
     return client;
   }
 
-  async addClient(newClient: Client, user: User): Promise<AddClientResponse> {
+  async removeClient(user: User, clientId: string): Promise<ClientResponse> {
+    const client = await Clients.findOne({
+      where: {
+        userId: user.id,
+        id: clientId,
+      },
+    });
+
+    if (!client) {
+      return {
+        isSuccess: false,
+      };
+    }
+
+    if (client) {
+      await client.remove();
+
+      return {
+        isSuccess: true,
+        id: client.id,
+        companyName: client.companyName,
+      };
+    }
+
+    return {
+      isSuccess: false,
+    };
+  }
+
+  async addClient(newClient: Client, user: User): Promise<ClientResponse> {
     const {
       companyName,
       streetAddress,

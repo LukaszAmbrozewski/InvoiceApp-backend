@@ -10,7 +10,7 @@ export interface Client {
   phoneNumber: number;
 }
 
-export type AddClientResponse =
+export type ClientResponse =
   | {
       isSuccess: true;
       id: string;

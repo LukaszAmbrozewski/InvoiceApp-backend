@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -10,7 +11,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { User } from '../user/user.entity';
-import { AddClientResponse, Client } from '../interfaces/client';
+import { ClientResponse, Client } from '../interfaces/client';
 import { ClientsService } from './clients.service';
 import { ClientDto } from './dto/client.dto';
 
@@ -21,16 +22,16 @@ export class ClientsController {
   @Get('/')
   @UseGuards(AuthGuard('jwt'))
   getAllUsers(@UserObj() user: User): Promise<Client[]> {
-    return this.clientsService.getAllUsers(user);
+    return this.clientsService.getAllClients(user);
   }
 
   @Get('/:clientId')
   @UseGuards(AuthGuard('jwt'))
-  getOneUser(
+  getOneClient(
     @Param('clientId') clientId: string,
     @UserObj() user: User,
   ): Promise<{ isSuccess: boolean } | Client> {
-    return this.clientsService.getOneUsers(user, clientId);
+    return this.clientsService.getOneClient(user, clientId);
   }
 
   @Post('/')
@@ -38,7 +39,16 @@ export class ClientsController {
   addClient(
     @Body() newClient: ClientDto,
     @UserObj() user: User,
-  ): Promise<AddClientResponse> {
+  ): Promise<ClientResponse> {
     return this.clientsService.addClient(newClient, user);
+  }
+
+  @Delete('/:clientId')
+  @UseGuards(AuthGuard('jwt'))
+  removeOneClient(
+    @Param('clientId') clientId: string,
+    @UserObj() user: User,
+  ): Promise<ClientResponse> {
+    return this.clientsService.removeClient(user, clientId);
   }
 }
