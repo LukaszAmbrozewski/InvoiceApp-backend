@@ -58,4 +58,13 @@ export class InvoicesController {
   ): Promise<Invoice> {
     return this.invoicesService.getOneInvoice(user, id);
   }
+
+  @Delete('/:id')
+  @UseGuards(AuthGuard('jwt'))
+  removeOneInvoice(
+    @UserObj() user: User,
+    @Param('id') id: string,
+  ): Promise<InvoiceRemoveResponse> {
+    return this.invoicesService.removeOneInvoice(user, id);
+  }
 }

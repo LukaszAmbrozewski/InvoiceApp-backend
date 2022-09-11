@@ -24,3 +24,12 @@ export type InvoiceResponse =
   | {
       isSuccess: false;
     };
+
+export type InvoiceRemoveResponse =
+  | {
+      isSuccess: true;
+      id: string;
+    }
+  | {
+      isSuccess: false;
+    };

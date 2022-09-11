@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   Invoice,
+  InvoiceRemoveResponse,
   InvoiceResponse,
 } from '../interfaces/invoice';
 import { User } from '../user/user.entity';
@@ -130,5 +131,36 @@ export class InvoicesService {
     }
 
     return invoice;
+  }
+
+  async removeOneInvoice(
+    user: User,
+    id: string,
+  ): Promise<InvoiceRemoveResponse> {
+    const invoice = await Invoices.findOne({
+      where: {
+        userId: user.id,
+        id: id,
+      },
+    });
+
+    if (!invoice) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Invoice not found!',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    await invoice.remove();
+
+    //@@TODO Add function remove invoice elements in this place. 1 step - remove invoice, 2 step -  remove elements invoice.
+
+    return {
+      isSuccess: true,
+      id,
+    };
   }
 }
