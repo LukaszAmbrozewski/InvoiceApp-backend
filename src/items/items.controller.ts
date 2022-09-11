@@ -17,4 +17,13 @@ export class ItemsController {
   ): Promise<Item[]> {
     return this.itemsService.getAllItemsForInvoice(user, invoiceId);
   }
+
+  @Get('/one/:itemId')
+  @UseGuards(AuthGuard('jwt'))
+  getOneItemForInvoice(
+    @UserObj() user: User,
+    @Param('itemId') itemId: string,
+  ): Promise<Item> {
+    return this.itemsService.getOneItemForInvoice(user, itemId);
+  }
 }
