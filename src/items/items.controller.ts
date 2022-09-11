@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Inject,
   Param,
+  Patch,
   UseGuards,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
@@ -11,6 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Item, ItemResponse } from '../interfaces/items';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { User } from '../user/user.entity';
+import { ItemsDto } from './dto/items.dto';
 
 @Controller('items')
 export class ItemsController {
@@ -41,5 +44,14 @@ export class ItemsController {
     @Param('itemId') itemId: string,
   ): Promise<ItemResponse> {
     return this.itemsService.removeOneItem(user, itemId);
+  }
+
+  @Patch('/')
+  @UseGuards(AuthGuard('jwt'))
+  patchOneItem(
+    @UserObj() user: User,
+    @Body() patchedItem: ItemsDto,
+  ): Promise<ItemResponse> {
+    return this.itemsService.patchOneItem(user, patchedItem);
   }
 }

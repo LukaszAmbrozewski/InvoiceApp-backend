@@ -2,6 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '../user/user.entity';
 import { Item, ItemResponse } from '../interfaces/items';
 import { Items } from './items.entity';
+import { updateItemObj } from '../utils/update-item-obj';
+import { itemNotFound } from '../utils/item-not-found';
+import { validationPatchOneItemObj } from '../utils/validation-patch-one-item-obj';
 
 @Injectable()
 export class ItemsService {
@@ -23,13 +26,7 @@ export class ItemsService {
     });
 
     if (!item) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Item not found!',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      itemNotFound();
     }
 
     return item;
@@ -44,13 +41,7 @@ export class ItemsService {
     });
 
     if (!item) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Item not found!',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      itemNotFound();
     }
 
     await item.remove();
@@ -59,6 +50,41 @@ export class ItemsService {
       isSuccess: true,
       id: item.id,
       invoiceId: item.invoiceId,
+    };
+  }
+
+  async patchOneItem(user: User, patchedItem: Item): Promise<ItemResponse> {
+    const { userId } = patchedItem;
+
+    const item = await Items.findOne({
+      where: {
+        userId: userId,
+        id: patchedItem.id,
+      },
+    });
+
+    if (!item) {
+      itemNotFound();
+    }
+
+    if (!validationPatchOneItemObj(patchedItem)) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Item values are incorrect!',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    updateItemObj(item, patchedItem);
+
+    await item.save();
+
+    return {
+      isSuccess: true,
+      id: patchedItem.id,
+      invoiceId: patchedItem.invoiceId,
     };
   }
 }
