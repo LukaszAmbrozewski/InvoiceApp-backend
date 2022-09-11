@@ -10,3 +10,13 @@ export interface Item {
   taxValue: number;
   totalGrossValue: number;
 }
+
+export type ItemResponse =
+  | {
+      isSuccess: true;
+      id: string;
+      invoiceId: string;
+    }
+  | {
+      isSuccess: false;
+    };
