@@ -71,7 +71,7 @@ export class InvoicesService {
           status: HttpStatus.NOT_FOUND,
           error: 'Invoice not found!',
         },
-        HttpStatus.FORBIDDEN,
+        HttpStatus.NOT_FOUND,
       );
     }
 
@@ -98,5 +98,13 @@ export class InvoicesService {
       id: invoice.id,
       clientId: invoice.clientId,
     };
+  }
+
+  async getAllInvoices(user: User): Promise<Invoices[]> {
+    return await Invoices.find({
+      where: {
+        userId: user.id,
+      },
+    });
   }
 }
