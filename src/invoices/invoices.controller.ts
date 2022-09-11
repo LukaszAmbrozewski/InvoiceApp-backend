@@ -11,7 +11,11 @@ import {
 } from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Invoice, InvoiceResponse } from '../interfaces/invoice';
+import {
+  Invoice,
+  InvoiceRemoveResponse,
+  InvoiceResponse,
+} from '../interfaces/invoice';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { User } from '../user/user.entity';
 import { InvoiceDto } from './dto/invoices.dto';
@@ -44,5 +48,14 @@ export class InvoicesController {
   @UseGuards(AuthGuard('jwt'))
   getAllInvoices(@UserObj() user: User): Promise<Invoice[]> {
     return this.invoicesService.getAllInvoices(user);
+  }
+
+  @Get('/:id')
+  @UseGuards(AuthGuard('jwt'))
+  getOneInvoice(
+    @UserObj() user: User,
+    @Param('id') id: string,
+  ): Promise<Invoice> {
+    return this.invoicesService.getOneInvoice(user, id);
   }
 }
