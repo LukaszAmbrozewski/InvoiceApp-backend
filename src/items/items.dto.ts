@@ -8,6 +8,9 @@ export class ItemsDto {
   invoiceId: string;
 
   @IsString()
+  userId: string;
+
+  @IsString()
   @Max(255)
   name: string;
 

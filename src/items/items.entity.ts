@@ -11,6 +11,11 @@ export class Items extends BaseEntity {
   invoiceId: string;
 
   @Column({
+    length: 36,
+  })
+  userId: string;
+
+  @Column({
     length: 255,
   })
   name: string;

@@ -15,6 +15,7 @@ export class InvoicesService {
     const {
       clientId,
       creationDate,
+
       dateOfService,
       place,
       personCreatingInvoice,
