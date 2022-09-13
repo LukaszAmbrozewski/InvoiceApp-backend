@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   Invoice,
   InvoiceRemoveResponse,
@@ -8,6 +8,7 @@ import { User } from '../user/user.entity';
 import { Invoices } from './invoices.entity';
 import { invoiceNumber } from '../utils/invoice-number';
 import { updateInvoiceObj } from '../utils/update-invoice-obj';
+import { invoiceNotFound } from '../utils/invoice-not-found';
 
 @Injectable()
 export class InvoicesService {
@@ -15,7 +16,6 @@ export class InvoicesService {
     const {
       clientId,
       creationDate,
-
       dateOfService,
       place,
       personCreatingInvoice,
@@ -40,13 +40,9 @@ export class InvoicesService {
 
     const invoice = new Invoices();
 
+    updateInvoiceObj(invoice, newInvoice);
     invoice.invoiceNumber = newInvoiceNumber;
     invoice.userId = user.id;
-    invoice.clientId = clientId;
-    invoice.creationDate = creationDate;
-    invoice.dateOfService = dateOfService;
-    invoice.place = place;
-    invoice.personCreatingInvoice = personCreatingInvoice;
 
     await invoice.save();
 
@@ -71,13 +67,7 @@ export class InvoicesService {
     });
 
     if (!invoice) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Invoice not found!',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      invoiceNotFound();
     }
 
     if (
@@ -122,13 +112,7 @@ export class InvoicesService {
     });
 
     if (!invoice) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Invoice not found!',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      invoiceNotFound();
     }
 
     return invoice;
@@ -146,13 +130,7 @@ export class InvoicesService {
     });
 
     if (!invoice) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Invoice not found!',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      invoiceNotFound();
     }
 
     await invoice.remove();
