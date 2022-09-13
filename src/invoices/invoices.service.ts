@@ -9,6 +9,7 @@ import { Invoices } from './invoices.entity';
 import { invoiceNumber } from '../utils/invoice-number';
 import { updateInvoiceObj } from '../utils/update-invoice-obj';
 import { invoiceNotFound } from '../utils/invoice-not-found';
+import { Items } from '../items/items.entity';
 
 @Injectable()
 export class InvoicesService {
@@ -133,9 +134,12 @@ export class InvoicesService {
       invoiceNotFound();
     }
 
-    await invoice.remove();
+    await Items.delete({
+      userId: user.id,
+      invoiceId: invoice.id,
+    });
 
-    //@@TODO Add function remove invoice elements in this place. 1 step - remove invoice, 2 step -  remove elements invoice.
+    await invoice.remove();
 
     return {
       isSuccess: true,
