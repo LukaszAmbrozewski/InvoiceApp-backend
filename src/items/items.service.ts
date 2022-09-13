@@ -1,10 +1,12 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from '../user/user.entity';
 import { Item, ItemResponse } from '../interfaces/items';
 import { Items } from './items.entity';
 import { updateItemObj } from '../utils/update-item-obj';
 import { itemNotFound } from '../utils/item-not-found';
-import { validationPatchOneItemObj } from '../utils/validation-patch-one-item-obj';
+import { validationOneItemObj } from '../utils/validation-one-item-obj';
+import { checkInvoiceUser } from '../utils/check-invoice-user';
+import { itemValueAreIncorrect } from '../utils/item-value-are-incorrect';
 
 @Injectable()
 export class ItemsService {
@@ -54,27 +56,21 @@ export class ItemsService {
   }
 
   async patchOneItem(user: User, patchedItem: Item): Promise<ItemResponse> {
-    const { userId } = patchedItem;
-
     const item = await Items.findOne({
       where: {
-        userId: userId,
+        userId: user.id,
         id: patchedItem.id,
       },
     });
+
+    await checkInvoiceUser(user, patchedItem);
 
     if (!item) {
       itemNotFound();
     }
 
-    if (!validationPatchOneItemObj(patchedItem)) {
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          error: 'Item values are incorrect!',
-        },
-        HttpStatus.FORBIDDEN,
-      );
+    if (!validationOneItemObj(patchedItem)) {
+      itemValueAreIncorrect();
     }
 
     updateItemObj(item, patchedItem);
@@ -85,6 +81,27 @@ export class ItemsService {
       isSuccess: true,
       id: patchedItem.id,
       invoiceId: patchedItem.invoiceId,
+    };
+  }
+
+  async addOneItem(user: User, newItem: Item): Promise<ItemResponse> {
+    await checkInvoiceUser(user, newItem);
+
+    if (!validationOneItemObj(newItem)) {
+      itemValueAreIncorrect();
+    }
+
+    const item = new Items();
+
+    updateItemObj(item, newItem);
+    item.userId = user.id;
+
+    await item.save();
+
+    return {
+      isSuccess: true,
+      id: newItem.id,
+      invoiceId: newItem.invoiceId,
     };
   }
 }

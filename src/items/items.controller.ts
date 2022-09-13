@@ -6,6 +6,7 @@ import {
   Inject,
   Param,
   Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
@@ -53,5 +54,14 @@ export class ItemsController {
     @Body() patchedItem: ItemsDto,
   ): Promise<ItemResponse> {
     return this.itemsService.patchOneItem(user, patchedItem);
+  }
+
+  @Post('/')
+  @UseGuards(AuthGuard('jwt'))
+  addOneItem(
+    @UserObj() user: User,
+    @Body() newItem: ItemsDto,
+  ): Promise<ItemResponse> {
+    return this.itemsService.addOneItem(user, newItem);
   }
 }
