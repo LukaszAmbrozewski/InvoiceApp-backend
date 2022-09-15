@@ -10,6 +10,7 @@ import { invoiceNumber } from '../utils/invoice-number';
 import { updateInvoiceObj } from '../utils/update-invoice-obj';
 import { invoiceNotFound } from '../utils/invoice-not-found';
 import { Items } from '../items/items.entity';
+import { updateInvoiceSummary } from "../utils/update-invoice-summary";
 
 @Injectable()
 export class InvoicesService {
@@ -88,6 +89,7 @@ export class InvoicesService {
     updateInvoiceObj(invoice, patchedInvoice);
 
     await invoice.save();
+    await updateInvoiceSummary(user, invoice.id);
 
     return {
       isSuccess: true,
@@ -139,6 +141,7 @@ export class InvoicesService {
       invoiceId: invoice.id,
     });
 
+    await updateInvoiceSummary(user, invoice.id);
     await invoice.remove();
 
     return {

@@ -7,6 +7,7 @@ import { itemNotFound } from '../utils/item-not-found';
 import { validationOneItemObj } from '../utils/validation-one-item-obj';
 import { checkInvoiceUser } from '../utils/check-invoice-user';
 import { itemValueAreIncorrect } from '../utils/item-value-are-incorrect';
+import { updateInvoiceSummary } from '../utils/update-invoice-summary';
 
 @Injectable()
 export class ItemsService {
@@ -47,6 +48,7 @@ export class ItemsService {
     }
 
     await item.remove();
+    await updateInvoiceSummary(user, item.invoiceId);
 
     return {
       isSuccess: true,
@@ -76,6 +78,7 @@ export class ItemsService {
     updateItemObj(item, patchedItem);
 
     await item.save();
+    await updateInvoiceSummary(user, patchedItem.invoiceId);
 
     return {
       isSuccess: true,
@@ -97,6 +100,7 @@ export class ItemsService {
     item.userId = user.id;
 
     await item.save();
+    await updateInvoiceSummary(user, item.invoiceId);
 
     return {
       isSuccess: true,
