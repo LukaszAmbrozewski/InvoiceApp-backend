@@ -58,6 +58,5 @@ export const stats = async (
     monthStart = 1;
   }
 
-
   return statsRes;
 };
