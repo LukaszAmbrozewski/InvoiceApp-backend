@@ -1,5 +1,5 @@
 import { Between } from 'typeorm';
-import { getMonthName } from './getMonthName';
+import { getMonthName } from './get-month-name';
 import { MonthStats } from '../interfaces/stats';
 import { User } from '../user/user.entity';
 import { Invoices } from '../invoices/invoices.entity';
@@ -14,8 +14,6 @@ export const stats = async (
   const yearEnd = new Date(endingDate).getFullYear();
   const monthEnd = new Date(endingDate).getMonth();
   let month = 12;
-
-  console.log('***********************', user);
 
   const statsRes = [];
 

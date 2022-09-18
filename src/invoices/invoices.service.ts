@@ -11,6 +11,8 @@ import { updateInvoiceObj } from '../utils/update-invoice-obj';
 import { invoiceNotFound } from '../utils/invoice-not-found';
 import { Items } from '../items/items.entity';
 import { updateInvoiceSummary } from '../utils/update-invoice-summary';
+import { addNewActionToHistory } from '../utils/add-new-action-to-history';
+import { GetClientNameById } from '../utils/get-client-name-by-id';
 
 @Injectable()
 export class InvoicesService {
@@ -47,6 +49,12 @@ export class InvoicesService {
     invoice.userId = user.id;
 
     await invoice.save();
+    await addNewActionToHistory(
+      user,
+      `Dodano nową fakturę numer ${
+        invoice.invoiceNumber
+      } dla firmy ${await GetClientNameById(clientId)}.`,
+    );
 
     return {
       isSuccess: true,
@@ -68,6 +76,8 @@ export class InvoicesService {
       },
     });
 
+    console.log('*****************', invoice);
+
     if (!invoice) {
       invoiceNotFound();
     }
@@ -86,8 +96,13 @@ export class InvoicesService {
       };
     }
 
+    await addNewActionToHistory(
+      user,
+      `Edytowano fakturę ${
+        invoice.invoiceNumber
+      } dla firmy ${await GetClientNameById(patchedInvoice.clientId)}.`,
+    );
     updateInvoiceObj(invoice, patchedInvoice);
-
     await invoice.save();
     await updateInvoiceSummary(user, invoice.id);
 
@@ -143,6 +158,12 @@ export class InvoicesService {
 
     await updateInvoiceSummary(user, invoice.id);
     await invoice.remove();
+    await addNewActionToHistory(
+      user,
+      `Usunięto fakturę ${
+        invoice.invoiceNumber
+      } dla firmy ${await GetClientNameById(invoice.clientId)}.`,
+    );
 
     return {
       isSuccess: true,

@@ -4,6 +4,7 @@ import { Clients } from './clients.entity';
 import { User } from '../user/user.entity';
 import { validationNewClientObj } from '../utils/validation-new-client-obj';
 import { updateClientObj } from '../utils/update-client-obj';
+import { addNewActionToHistory } from '../utils/add-new-action-to-history';
 
 @Injectable()
 export class ClientsService {
@@ -60,6 +61,10 @@ export class ClientsService {
     updateClientObj(client, newClient);
 
     await client.save();
+    await addNewActionToHistory(
+      user,
+      `Dodano nowego kontrahenta: ${newClient.companyName}.`,
+    );
 
     return {
       isSuccess: true,
@@ -81,6 +86,11 @@ export class ClientsService {
         isSuccess: false,
       };
     }
+
+    await addNewActionToHistory(
+      user,
+      `Usunięto kontrahenta: ${client.companyName}.`,
+    );
 
     if (client) {
       await client.remove();
@@ -114,6 +124,10 @@ export class ClientsService {
       };
     }
 
+    await addNewActionToHistory(
+      user,
+      `Edytowano dane kontrahenta: ${client.companyName}.`,
+    );
     updateClientObj(client, patchedClient);
 
     if (!validationNewClientObj(client)) {

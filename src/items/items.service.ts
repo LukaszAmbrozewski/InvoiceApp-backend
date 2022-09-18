@@ -8,6 +8,8 @@ import { validationOneItemObj } from '../utils/validation-one-item-obj';
 import { checkInvoiceUser } from '../utils/check-invoice-user';
 import { itemValueAreIncorrect } from '../utils/item-value-are-incorrect';
 import { updateInvoiceSummary } from '../utils/update-invoice-summary';
+import { addNewActionToHistory } from '../utils/add-new-action-to-history';
+import { GetInvoiceNameById } from '../utils/get-invoice-name-by-id';
 
 @Injectable()
 export class ItemsService {
@@ -47,6 +49,12 @@ export class ItemsService {
       itemNotFound();
     }
 
+    await addNewActionToHistory(
+      user,
+      `Usunięto jedną pozycję z faktury ${await GetInvoiceNameById(
+        item.invoiceId,
+      )}.`,
+    );
     await item.remove();
     await updateInvoiceSummary(user, item.invoiceId);
 
@@ -77,6 +85,12 @@ export class ItemsService {
 
     updateItemObj(item, patchedItem);
 
+    await addNewActionToHistory(
+      user,
+      `Edytowano jedną pozycję z faktury ${await GetInvoiceNameById(
+        item.invoiceId,
+      )}.`,
+    );
     await item.save();
     await updateInvoiceSummary(user, patchedItem.invoiceId);
 
@@ -101,6 +115,13 @@ export class ItemsService {
 
     await item.save();
     await updateInvoiceSummary(user, item.invoiceId);
+
+    await addNewActionToHistory(
+      user,
+      `Dodano jedną pozycję do faktury ${await GetInvoiceNameById(
+        item.invoiceId,
+      )}.`,
+    );
 
     return {
       isSuccess: true,
