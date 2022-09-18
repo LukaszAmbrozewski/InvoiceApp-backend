@@ -5,3 +5,8 @@ export interface MonthStats {
   invoicesCount: number;
   averageInvoiceValue: number;
 }
+
+export type Period = {
+  startingDate: string;
+  endingDate: string;
+};
