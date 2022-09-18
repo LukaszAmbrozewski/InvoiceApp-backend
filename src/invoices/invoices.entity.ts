@@ -37,19 +37,22 @@ export class Invoices extends BaseEntity {
 
   @Column({
     precision: 11,
-    type: 'bigint',
+    scale: 2,
+    type: 'decimal',
   })
   netValueOfTheEntireInvoice: number;
 
   @Column({
     precision: 11,
-    type: 'bigint',
+    scale: 2,
+    type: 'decimal',
   })
   tax: number;
 
   @Column({
     precision: 11,
-    type: 'bigint',
+    scale: 2,
+    type: 'decimal',
   })
   grossValueOfEntireInvoice: number;
 

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   Invoice,
   InvoiceRemoveResponse,
@@ -8,6 +8,9 @@ import { User } from '../user/user.entity';
 import { Invoices } from './invoices.entity';
 import { invoiceNumber } from '../utils/invoice-number';
 import { updateInvoiceObj } from '../utils/update-invoice-obj';
+import { invoiceNotFound } from '../utils/invoice-not-found';
+import { Items } from '../items/items.entity';
+import { updateInvoiceSummary } from '../utils/update-invoice-summary';
 
 @Injectable()
 export class InvoicesService {
@@ -39,13 +42,9 @@ export class InvoicesService {
 
     const invoice = new Invoices();
 
+    updateInvoiceObj(invoice, newInvoice);
     invoice.invoiceNumber = newInvoiceNumber;
     invoice.userId = user.id;
-    invoice.clientId = clientId;
-    invoice.creationDate = creationDate;
-    invoice.dateOfService = dateOfService;
-    invoice.place = place;
-    invoice.personCreatingInvoice = personCreatingInvoice;
 
     await invoice.save();
 
@@ -70,13 +69,7 @@ export class InvoicesService {
     });
 
     if (!invoice) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Invoice not found!',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      invoiceNotFound();
     }
 
     if (
@@ -96,6 +89,7 @@ export class InvoicesService {
     updateInvoiceObj(invoice, patchedInvoice);
 
     await invoice.save();
+    await updateInvoiceSummary(user, invoice.id);
 
     return {
       isSuccess: true,
@@ -121,13 +115,7 @@ export class InvoicesService {
     });
 
     if (!invoice) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Invoice not found!',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      invoiceNotFound();
     }
 
     return invoice;
@@ -145,18 +133,16 @@ export class InvoicesService {
     });
 
     if (!invoice) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Invoice not found!',
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      invoiceNotFound();
     }
 
-    await invoice.remove();
+    await Items.delete({
+      userId: user.id,
+      invoiceId: invoice.id,
+    });
 
-    //@@TODO Add function remove invoice elements in this place. 1 step - remove invoice, 2 step -  remove elements invoice.
+    await updateInvoiceSummary(user, invoice.id);
+    await invoice.remove();
 
     return {
       isSuccess: true,
