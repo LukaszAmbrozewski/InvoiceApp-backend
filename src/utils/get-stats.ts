@@ -15,6 +15,8 @@ export const stats = async (
   const monthEnd = new Date(endingDate).getMonth();
   let month = 12;
 
+  console.log('***********************', user);
+
   const statsRes = [];
 
   while (yearStart <= yearEnd) {
