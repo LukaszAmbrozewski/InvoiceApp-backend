@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { RegisterUserResponse } from '../interfaces/user';
 import { User } from './user.entity';
@@ -19,7 +19,13 @@ export class UserService {
     });
 
     if (checkUser) {
-      throw new ForbiddenException();
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Email is already exists!',
+        },
+        HttpStatus.FORBIDDEN,
+      );
     }
 
     const user = new User();
