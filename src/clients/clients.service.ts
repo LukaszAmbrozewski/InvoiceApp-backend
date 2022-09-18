@@ -5,6 +5,7 @@ import { User } from '../user/user.entity';
 import { validationNewClientObj } from '../utils/validation-new-client-obj';
 import { updateClientObj } from '../utils/update-client-obj';
 import { addNewActionToHistory } from '../utils/add-new-action-to-history';
+import { Invoices } from '../invoices/invoices.entity';
 
 @Injectable()
 export class ClientsService {
@@ -85,6 +86,22 @@ export class ClientsService {
       return {
         isSuccess: false,
       };
+    }
+
+    const clientInvoices = await Invoices.find({
+      where: {
+        clientId: client.id,
+      },
+    });
+
+    if (clientInvoices.length !== 0) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Client remove is forbidden before remove client invoices!',
+        },
+        HttpStatus.FORBIDDEN,
+      );
     }
 
     await addNewActionToHistory(
