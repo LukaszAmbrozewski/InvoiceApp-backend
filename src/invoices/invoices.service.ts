@@ -10,7 +10,7 @@ import { invoiceNumber } from '../utils/invoice-number';
 import { updateInvoiceObj } from '../utils/update-invoice-obj';
 import { invoiceNotFound } from '../utils/invoice-not-found';
 import { Items } from '../items/items.entity';
-import { updateInvoiceSummary } from "../utils/update-invoice-summary";
+import { updateInvoiceSummary } from '../utils/update-invoice-summary';
 
 @Injectable()
 export class InvoicesService {
