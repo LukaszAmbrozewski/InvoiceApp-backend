@@ -18,4 +18,37 @@ export class User extends BaseEntity {
     default: null,
   })
   currentTokenId: string | null;
+
+  @Column({
+    length: 255,
+  })
+  companyName: string;
+
+  @Column({
+    length: 80,
+  })
+  streetAddress: string;
+
+  @Column({
+    length: 50,
+  })
+  cityAndCode: string;
+
+  @Column({
+    precision: 11,
+    type: 'bigint',
+  })
+  nip: number;
+
+  @Column({
+    precision: 15,
+    type: 'bigint',
+  })
+  regon: number;
+
+  @Column({
+    precision: 18,
+    type: 'bigint',
+  })
+  phoneNumber: number;
 }
