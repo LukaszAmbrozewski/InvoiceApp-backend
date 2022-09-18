@@ -6,9 +6,19 @@ export class History extends BaseEntity {
   id: string;
 
   @Column({
+    length: 36,
+  })
+  userId: string;
+
+  @Column({
     type: 'date',
   })
   date: string;
+
+  @Column({
+    type: 'time',
+  })
+  time: string;
 
   @Column({
     length: 255,
