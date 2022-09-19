@@ -6,6 +6,7 @@ import { validationNewClientObj } from '../utils/validation-new-client-obj';
 import { updateClientObj } from '../utils/update-client-obj';
 import { addNewActionToHistory } from '../utils/add-new-action-to-history';
 import { Invoices } from '../invoices/invoices.entity';
+import { clientNotFound } from '../utils/client-not-found';
 
 @Injectable()
 export class ClientsService {
@@ -26,9 +27,7 @@ export class ClientsService {
     });
 
     if (!client) {
-      return {
-        isSuccess: false,
-      };
+      clientNotFound();
     }
     return client;
   }
@@ -52,9 +51,13 @@ export class ClientsService {
     }
 
     if (!validationNewClientObj(newClient)) {
-      return {
-        isSuccess: false,
-      };
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Invalid data!',
+        },
+        HttpStatus.FORBIDDEN,
+      );
     }
     const client = new Clients();
 
@@ -83,9 +86,7 @@ export class ClientsService {
     });
 
     if (!client) {
-      return {
-        isSuccess: false,
-      };
+      clientNotFound();
     }
 
     const clientInvoices = await Invoices.find({
@@ -136,9 +137,7 @@ export class ClientsService {
     });
 
     if (!client) {
-      return {
-        isSuccess: false,
-      };
+      clientNotFound();
     }
 
     await addNewActionToHistory(
