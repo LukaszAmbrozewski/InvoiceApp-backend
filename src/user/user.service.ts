@@ -1,8 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
-import { RegisterUserResponse, UserDataResponse } from '../interfaces/user';
+import {
+  PatchedUsedData,
+  RegisterUserResponse,
+  UserData,
+  UserPatchResponse,
+} from '../interfaces/user';
 import { User } from './user.entity';
 import { hashPwd } from '../utils/hash-pwd';
+import { validationUserObj } from '../utils/validation-user-obj';
 
 @Injectable()
 export class UserService {
@@ -36,7 +42,7 @@ export class UserService {
     return this.filter(user);
   }
 
-  async getUserData(user: User): Promise<UserDataResponse> {
+  async getUserData(user: User): Promise<UserData> {
     const userData = await User.findOne({
       where: {
         id: user.id,
@@ -63,6 +69,34 @@ export class UserService {
       nip,
       regon,
       phoneNumber,
+    };
+  }
+
+  async patchUserData(
+    user: User,
+    patchUserData: PatchedUsedData,
+  ): Promise<UserPatchResponse> {
+    const userObj = await User.findOne({
+      where: {
+        id: user.id,
+      },
+    });
+
+    const { companyName, streetAddress, cityAndCode, nip, regon, phoneNumber } =
+      patchUserData;
+
+    await validationUserObj(user, patchUserData);
+
+    userObj.companyName = companyName;
+    userObj.streetAddress = streetAddress;
+    userObj.cityAndCode = cityAndCode;
+    userObj.nip = nip;
+    userObj.regon = regon;
+    userObj.phoneNumber = phoneNumber;
+
+    await userObj.save();
+    return {
+      isSuccess: true,
     };
   }
 }

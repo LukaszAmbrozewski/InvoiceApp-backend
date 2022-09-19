@@ -3,7 +3,7 @@ export interface RegisterUserResponse {
   id: string;
 }
 
-export type UserDataResponse = {
+export type UserData = {
   id: string;
   email: string;
   companyName: string;
@@ -13,3 +13,20 @@ export type UserDataResponse = {
   regon: number;
   phoneNumber: number;
 };
+
+export type PatchedUsedData = {
+  companyName: string;
+  streetAddress: string;
+  cityAndCode: string;
+  nip: number;
+  regon: number;
+  phoneNumber: number;
+};
+
+export type UserPatchResponse =
+  | {
+      isSuccess: true;
+    }
+  | {
+      isSuccess: false;
+    };
