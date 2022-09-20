@@ -1,6 +1,6 @@
 # InvoiceApp
 
-This project is backend for my fullstack application. To prepare this project I used technology TypeScript, Nest.js, TypeOrm, MySQL database and Passport.js. Application target is simplify create invoices and managment them. Layouts, frontend, backend and database the entire application is design and doing by me own. The application was designed with a mobile first approach. Frontend part application is in progress. To build frontend i use TypeScript and React.js. 
+This project is backend for my fullstack application. To prepare this project I used technology TypeScript, Nest.js, TypeOrm, MySQL database and Passport.js. Application target is simplify create invoices and managment them. I designed and made the views, backend and frontend myself. The application was designed with a mobile first approach. Frontend part application is in progress. To build frontend i use TypeScript and React.js. 
 
 
 <p align="left">
