@@ -4,10 +4,10 @@ export interface Client {
   companyName: string;
   streetAddress: string;
   cityAndCode: string;
-  nip: number;
-  regon: number;
+  nip: number | null;
+  regon: number | null;
   email: string;
-  phoneNumber: number;
+  phoneNumber: number | null;
 }
 
 export type ClientResponse =
