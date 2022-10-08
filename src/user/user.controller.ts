@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
 import { RegisterDto } from './dto/register.dto';
 import {
@@ -6,7 +6,7 @@ import {
   RegisterUserResponse,
   UserData,
   UserPatchResponse,
-} from '../interfaces/user';
+} from '../interfaces';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from './user.entity';
 import { UserObj } from '../decorators/user-obj.decorator';
@@ -26,7 +26,7 @@ export class UserController {
     return this.userService.getUserData(user);
   }
 
-  @Post('/')
+  @Patch('/')
   @UseGuards(AuthGuard('jwt'))
   async patchUserData(
     @UserObj() user: User,
