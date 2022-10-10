@@ -23,18 +23,16 @@ This project is backend for my fullstack application. To prepare this project I 
 - Keep track of statistics,
 - Tracking activity history,
 
-## Mobile designed layouts:
-<img src="https://res.cloudinary.com/dtazubrr1/image/upload/v1663691046/InvoiceApp/screen_1_gppdyf.png" alt="mobile layouts 1" width="900"/>
-<img src="https://res.cloudinary.com/dtazubrr1/image/upload/v1663691046/InvoiceApp/screen_2_drpfbk.png" alt="mobile layouts 2" width="900"/>
-<img src="https://res.cloudinary.com/dtazubrr1/image/upload/v1663691046/InvoiceApp/screen_3_zuoajt.png" alt="mobile layouts 3" width="900"/>
-<img src="https://res.cloudinary.com/dtazubrr1/image/upload/v1663691046/InvoiceApp/screen_4_xl7m0n.png" alt="mobile layouts 4" width="900"/>
+# Frontend repository:
+https://github.com/LukaszAmbrozewski/InvoiceApp-frontend
+
 
 ## Run project locally - BACKEND
 
 Clone the project
 
 ```bash
-  git clone https://github.com/lukaszambrozewski/nestapp.git
+  git clone https://github.com/lukaszambrozewski/InvoiceApp-backend.git
 ```
 
 Go to the project directory
