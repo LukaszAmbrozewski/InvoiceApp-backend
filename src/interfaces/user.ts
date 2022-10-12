@@ -9,9 +9,9 @@ export type UserData = {
   companyName: string;
   streetAddress: string;
   cityAndCode: string;
-  nip: number | null;
-  regon: number | null;
-  phoneNumber: number | null;
+  nip: number | undefined;
+  regon: number | undefined;
+  phoneNumber: number | undefined;
 };
 
 export type PatchedUsedData = {
