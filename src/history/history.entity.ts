@@ -24,4 +24,9 @@ export class History extends BaseEntity {
     length: 255,
   })
   action: string;
+
+  @Column({
+    length: 255,
+  })
+  fullDateAndTime: string;
 }

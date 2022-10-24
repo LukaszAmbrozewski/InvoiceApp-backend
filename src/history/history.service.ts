@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../user/user.entity';
-import { OneAction } from '../interfaces/history';
+import { OneAction } from '../interfaces';
 import { History } from './history.entity';
 
 @Injectable()
