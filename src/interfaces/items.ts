@@ -20,3 +20,10 @@ export type ItemResponse =
   | {
       isSuccess: false;
     };
+
+export type AddItem = {
+  name: string;
+  quantity: number;
+  netValue: number;
+  taxRate: number;
+};

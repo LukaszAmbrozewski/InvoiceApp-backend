@@ -4,4 +4,5 @@ export interface OneAction {
   date: string;
   time: string;
   action: string;
+  fullDateAndTime: string;
 }

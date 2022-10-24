@@ -33,3 +33,15 @@ export type InvoiceRemoveResponse =
   | {
       isSuccess: false;
     };
+
+export type InvoiceAdd = {
+  place: string;
+  creationDate: string;
+  dateOfService: string;
+  personCreatingInvoice: string;
+};
+
+export type InvoicePayment = {
+  dueDate: string;
+  accountNumber: string;
+};
