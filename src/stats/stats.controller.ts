@@ -1,4 +1,4 @@
-import { Body, Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { StatsService } from './stats.service';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { User } from '../user/user.entity';
@@ -9,7 +9,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class StatsController {
   constructor(private readonly statsService: StatsService) {}
 
-  @Get('/')
+  @Post('/')
   @UseGuards(AuthGuard('jwt'))
   async getStats(
     @UserObj() user: User,
