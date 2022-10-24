@@ -16,11 +16,13 @@ export const addNewActionToHistory = async (user: User, action: string) => {
     ':' +
     actionTime.getSeconds();
 
+  const fullDateAndTime = new Date().toLocaleString();
   const history = new History();
   history.userId = user.id;
   history.date = date;
   history.time = time;
   history.action = action;
+  history.fullDateAndTime = fullDateAndTime;
 
   await history.save();
 };
